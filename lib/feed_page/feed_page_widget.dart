@@ -86,58 +86,101 @@ class _FeedPageWidgetState extends State<FeedPageWidget> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.network(
-                        listViewPostsRecord.imageUrl,
-                        width: double.infinity,
-                        height: 120,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 15, 15, 25),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Card Title',
+                  child: StreamBuilder<UsersRecord>(
+                    stream: UsersRecord.getDocument(listViewPostsRecord.user),
+                    builder: (context, snapshot) {
+                      // Customize what your widget looks like when it's loading.
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      final columnUsersRecord = snapshot.data;
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.network(
+                            listViewPostsRecord.imageUrl,
+                            width: double.infinity,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(15, 15, 15, 25),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        columnUsersRecord.email,
+                                        style:
+                                            FlutterFlowTheme.bodyText1.override(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      StreamBuilder<List<PostsRecord>>(
+                                        stream: queryPostsRecord(
+                                          queryBuilder: (postsRecord) =>
+                                              postsRecord.orderBy('price',
+                                                  descending: true),
+                                          singleRecord: true,
+                                        ),
+                                        builder: (context, snapshot) {
+                                          // Customize what your widget looks like when it's loading.
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }
+                                          List<PostsRecord>
+                                              textPostsRecordList =
+                                              snapshot.data;
+                                          // Customize what your widget looks like with no query results.
+                                          if (snapshot.data.isEmpty) {
+                                            // return Container();
+                                            // For now, we'll just include some dummy data.
+                                            textPostsRecordList =
+                                                createDummyPostsRecord(
+                                                    count: 1);
+                                          }
+                                          final textPostsRecord =
+                                              textPostsRecordList.first;
+                                          return Text(
+                                            listViewPostsRecord.price
+                                                .toString(),
+                                            style: FlutterFlowTheme.bodyText1
+                                                .override(
+                                              fontFamily: 'Poppins',
+                                              color: FlutterFlowTheme
+                                                  .secondaryColor,
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                  child: Text(
+                                    listViewPostsRecord.description,
                                     style: FlutterFlowTheme.bodyText1.override(
                                       fontFamily: 'Poppins',
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  Text(
-                                    'Price',
-                                    style: FlutterFlowTheme.bodyText1.override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.secondaryColor,
-                                    ),
-                                  )
-                                ],
-                              ),
+                                )
+                              ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                              child: Text(
-                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum gravida mattis lorem, et posuere tortor rutrum vitae. Vivamus lacinia fringilla libero, at maximus quam imperdiet sed. Pellentesque egestas eget ex a consectetur.',
-                                style: FlutterFlowTheme.bodyText1.override(
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                          )
+                        ],
+                      );
+                    },
                   ),
                 );
               },
