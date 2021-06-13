@@ -9,6 +9,7 @@ import 'schema/posts_record.dart';
 import 'schema/serializers.dart';
 
 export 'package:cloud_firestore/cloud_firestore.dart';
+export 'schema/serializers.dart';
 export 'schema/users_record.dart';
 export 'schema/posts_record.dart';
 

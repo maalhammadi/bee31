@@ -2,6 +2,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong/latlong.dart';
 
 import 'schema_util.dart';
 import 'serializers.dart';
@@ -27,7 +28,7 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
 
   @nullable
   @BuiltValueField(wireName: 'created_time')
-  Timestamp get createdTime;
+  DateTime get createdTime;
 
   @nullable
   @BuiltValueField(wireName: 'phone_number')
@@ -61,10 +62,10 @@ Map<String, dynamic> createUsersRecordData({
   String displayName,
   String photoUrl,
   String uid,
-  Timestamp createdTime,
+  DateTime createdTime,
   String phoneNumber,
 }) =>
-    serializers.serializeWith(
+    serializers.toFirestore(
         UsersRecord.serializer,
         UsersRecord((u) => u
           ..email = email

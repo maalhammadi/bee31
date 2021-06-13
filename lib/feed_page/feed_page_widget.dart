@@ -18,42 +18,6 @@ class _FeedPageWidgetState extends State<FeedPageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.primaryColor,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            print('IconButton pressed ...');
-          },
-          icon: Icon(
-            Icons.highlight_off_outlined,
-            color: Colors.black,
-            size: 30,
-          ),
-          iconSize: 30,
-        ),
-        title: Text(
-          'بيع',
-          style: FlutterFlowTheme.bodyText1.override(
-            fontFamily: 'Poppins',
-          ),
-        ),
-        actions: [
-          Container(
-            width: 120,
-            height: 120,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: Image.network(
-              'https://picsum.photos/seed/434/600',
-            ),
-          )
-        ],
-        centerTitle: true,
-        elevation: 4,
-      ),
       body: SafeArea(
         child: StreamBuilder<List<PostsRecord>>(
           stream: queryPostsRecord(

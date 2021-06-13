@@ -2,6 +2,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong/latlong.dart';
 
 import 'schema_util.dart';
 import 'serializers.dart';
@@ -26,7 +27,7 @@ abstract class PostsRecord implements Built<PostsRecord, PostsRecordBuilder> {
 
   @nullable
   @BuiltValueField(wireName: 'created_at')
-  Timestamp get createdAt;
+  DateTime get createdAt;
 
   @nullable
   @BuiltValueField(wireName: kDocumentReferenceField)
@@ -54,9 +55,9 @@ Map<String, dynamic> createPostsRecordData({
   DocumentReference user,
   int price,
   String description,
-  Timestamp createdAt,
+  DateTime createdAt,
 }) =>
-    serializers.serializeWith(
+    serializers.toFirestore(
         PostsRecord.serializer,
         PostsRecord((p) => p
           ..imageUrl = imageUrl
