@@ -14,76 +14,153 @@ class AddPostWidget extends StatefulWidget {
 }
 
 class _AddPostWidgetState extends State<AddPostWidget> {
-  TextEditingController textController;
+  TextEditingController textController1;
+  TextEditingController textController2;
+  final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController();
+    textController1 = TextEditingController();
+    textController2 = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: true,
-        actions: [
-          IconButton(
-            onPressed: () async {
-              final description = '';
-
-              final postsRecordData = createPostsRecordData(
-                description: description,
-              );
-
-              await PostsRecord.collection.doc().set(postsRecordData);
-            },
-            icon: Icon(
-              Icons.add_box_outlined,
-              color: Colors.black,
-              size: 30,
-            ),
-            iconSize: 30,
-          )
-        ],
-        centerTitle: true,
-        elevation: 4,
-      ),
-      body: SafeArea(
-        child: TextFormField(
-          controller: textController,
-          obscureText: false,
-          decoration: InputDecoration(
-            hintText: 'text field',
-            hintStyle: FlutterFlowTheme.bodyText1.override(
+    return Form(
+      key: formKey,
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Add Post',
+            style: FlutterFlowTheme.bodyText1.override(
               fontFamily: 'Poppins',
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0x00000000),
-                width: 1,
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(4.0),
-                topRight: Radius.circular(4.0),
-              ),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0x00000000),
-                width: 1,
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(4.0),
-                topRight: Radius.circular(4.0),
-              ),
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          style: FlutterFlowTheme.bodyText1.override(
-            fontFamily: 'Poppins',
+          actions: [
+            IconButton(
+              onPressed: () async {
+                if (!formKey.currentState.validate()) {
+                  return;
+                }
+                final imageUrl = '';
+                final user = currentUserReference;
+                final price = int.parse(textController2.text);
+                final description = textController1.text;
+                final createdAt = getCurrentTimestamp;
+
+                final postsRecordData = createPostsRecordData(
+                  imageUrl: imageUrl,
+                  user: user,
+                  price: price,
+                  description: description,
+                  createdAt: createdAt,
+                );
+
+                await PostsRecord.collection.doc().set(postsRecordData);
+              },
+              icon: Icon(
+                Icons.done,
+                color: Colors.black,
+                size: 30,
+              ),
+              iconSize: 30,
+            )
+          ],
+          centerTitle: true,
+          elevation: 4,
+        ),
+        body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
+                child: TextFormField(
+                  controller: textController1,
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    hintText: 'Add description',
+                    hintStyle: FlutterFlowTheme.bodyText1.override(
+                      fontFamily: 'Poppins',
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0x00000000),
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4.0),
+                        topRight: Radius.circular(4.0),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0x00000000),
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4.0),
+                        topRight: Radius.circular(4.0),
+                      ),
+                    ),
+                  ),
+                  style: FlutterFlowTheme.bodyText1.override(
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: TextFormField(
+                  controller: textController2,
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    hintText: 'Add Price',
+                    hintStyle: FlutterFlowTheme.bodyText1.override(
+                      fontFamily: 'Poppins',
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0x00000000),
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4.0),
+                        topRight: Radius.circular(4.0),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0x00000000),
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4.0),
+                        topRight: Radius.circular(4.0),
+                      ),
+                    ),
+                  ),
+                  style: FlutterFlowTheme.bodyText1.override(
+                    fontFamily: 'Poppins',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (val) {
+                    if (val.isEmpty) {
+                      return 'Field is required';
+                    }
+
+                    return null;
+                  },
+                ),
+              )
+            ],
           ),
         ),
       ),
